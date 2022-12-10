@@ -22,4 +22,4 @@ CORS(app)
 
 @app.route("/")
 def home():
-	return "Server Working"
+    return "Server Working"
