@@ -1,3 +1,15 @@
 pyhton -m venv venv (To Create Virtual Environmnt)
 pip install -r req.txt (To install all packages)
 https://www.sqlite.org/download.html (SQL Download Link)
+
+type python in cmd
+
+from app import app
+from app import db
+from app import AdminInfo,Employee,Project
+
+app.app_context().push()
+db.create_all()
+
+
+
