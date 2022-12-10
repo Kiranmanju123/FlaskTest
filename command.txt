@@ -1,0 +1,3 @@
+pyhton -m venv venv
+pip install -r req.txt
+https://www.sqlite.org/download.html (SQL Download Link)
