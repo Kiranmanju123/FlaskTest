@@ -1,1 +1,5 @@
-test
+pip install flask
+pip install flask-sqlalchemy
+pip install flask-marshmallow
+pip install Flask-Admin
+pip install Flask-Cors
