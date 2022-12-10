@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- CSS only -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+    <title>Document</title>
+    <script>
+      function buildTableAndFetchData() {
+        fetch("http://127.0.0.1:5000/getAllEmployee", {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            var employeeData = data.info;
+            var table = document.getElementById("myTable");
+            for (var i = 0; i < employeeData.length; i++) {
+              var row = `<tr>
+                    <td>${employeeData[i].employee_id}</td>
+                    <td>${employeeData[i].employee_name}</td>
+                    <td>${employeeData[i].employee_position}</td>
+                    <td>${employeeData[i].employee_salary}</td>
+                    <td><span data-bs-toggle="modal" data-bs-target="#exampleModal1" onclick="edit(${employeeData[i].employee_id})">Edit</span>  <span onclick="deleteEmp(${employeeData[i].employee_id})">Delete</span></td>
+
+                    </tr>
+                `;
+              table.innerHTML += row;
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+
+      function edit(id) {
+        fetch(`http://127.0.0.1:5000/getSingleEmployee?employee_id=${id}`, {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            document.getElementById("u_employee_name").value =
+              data.info[0].employee_name;
+          });
+      }
+
+      function deleteEmp(id) {
+        alert(id);
+      }
+
+      buildTableAndFetchData();
+
+      function createEmployee() {
+        let employee_name = document.getElementById("employee_name").value;
+        let employee_address =
+          document.getElementById("employee_address").value;
+        let employee_position =
+          document.getElementById("employee_position").value;
+        let employee_department = document.getElementById(
+          "employee_department"
+        ).value;
+        let employee_salary = document.getElementById("employee_salary").value;
+
+        const data = {
+          employee_name: employee_name,
+          employee_address: employee_address,
+          employee_position: employee_position,
+          employee_department: employee_department,
+          employee_salary: employee_salary,
+        };
+
+        fetch("http://127.0.0.1:5000/createEmployee", {
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log(data);
+
+            buildTableAndFetchData();
+            window.location.reload();
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div>
+      <nav class="navbar navbar-expand-lg bg-light">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#">Project</a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  aria-current="page"
+                  href="file:///C:/Users/Project/Desktop/UI/employee.html"
+                  >Employee</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="file:///C:/Users/Project/Desktop/UI/project.html"
+                  >Projects</a
+                >
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link"
+                  href="file:///C:/Users/Project/Desktop/UI/query.html"
+                  >Query</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+
+    <button
+      type="button"
+      class="btn btn-primary"
+      data-bs-toggle="modal"
+      data-bs-target="#exampleModal"
+    >
+      Add Employee
+    </button>
+
+    <div class="tb mt-5">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">First</th>
+            <th scope="col">Last</th>
+            <th scope="col">Handle</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody id="myTable"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
+
+<!-- Insert Modal -->
+<div
+  class="modal fade"
+  id="exampleModal"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Employee</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <label for="exampleInputEmail1" class="form-label">Employee Name</label>
+        <input
+          required
+          id="employee_name"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Address</label
+        >
+        <input
+          required
+          id="employee_address"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Position</label
+        >
+        <input
+          required
+          id="employee_position"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Department</label
+        >
+        <input
+          required
+          id="employee_department"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Salary</label
+        >
+        <input
+          type="number"
+          required
+          id="employee_salary"
+          class="form-control"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button
+          onclick="createEmployee()"
+          type="button"
+          class="btn btn-primary"
+        >
+          Save changes
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Update Modal -->
+<div
+  class="modal fade"
+  id="exampleModal1"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Employee</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <label for="exampleInputEmail1" class="form-label">Employee Name</label>
+        <input
+          required
+          id="u_employee_name"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Address</label
+        >
+        <input
+          required
+          id="U_employee_address"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Position</label
+        >
+        <input
+          required
+          id="employee_position"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Department</label
+        >
+        <input
+          required
+          id="u_employee_department"
+          class="form-control"
+          aria-describedby="emailHelp"
+        />
+
+        <label for="exampleInputEmail1" class="form-label"
+          >Employee Salary</label
+        >
+        <input
+          type="number"
+          required
+          id="u_employee_salary"
+          class="form-control"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+        />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Close
+        </button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
